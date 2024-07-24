@@ -59,4 +59,8 @@ public class TemplateService {
         List<Snippet> snippets = snippetRepository.findAllByTemplate(template);
         return FindTemplateByIdResponse.of(template, snippets);
     }
+
+    public FindAllTemplatesResponse findContainTopic(String topic) {
+        return FindAllTemplatesResponse.from(thumbnailSnippetRepository.searchByTopic(topic));
+    }
 }

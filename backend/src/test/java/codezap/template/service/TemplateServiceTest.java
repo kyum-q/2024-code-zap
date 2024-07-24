@@ -32,11 +32,10 @@ import io.restassured.RestAssured;
 @Sql(value = "/clear.sql", executionPhase = ExecutionPhase.AFTER_TEST_CLASS)
 class TemplateServiceTest {
 
-    @Autowired
-    private TemplateService templateService;
-
     @LocalServerPort
     int port;
+    @Autowired
+    private TemplateService templateService;
     @Autowired
     private TemplateRepository templateRepository;
     @Autowired
@@ -91,6 +90,22 @@ class TemplateServiceTest {
                 () -> assertThat(foundTemplate.title()).isEqualTo(createdTemplate.title()),
                 () -> assertThat(foundTemplate.snippets().size()).isEqualTo(createdTemplate.snippets().size())
         );
+    }
+
+    @Test
+    @DisplayName("템플릿 토픽 검색 성공 : 템플릿 제목에 포함")
+    void findAllTemplatesTitleContainTopicSuccess() {
+        //given
+        saveTemplate(makeTemplateRequest("hello"));
+        saveTemplate(makeTemplateRequest("hello topic"));
+        saveTemplate(makeTemplateRequest("topic hello"));
+        saveTemplate(makeTemplateRequest("hello topic !"));
+
+        //when
+        FindAllTemplatesResponse templates = templateService.findContainTopic("topic");
+
+        //then
+        assertThat(templates.templates()).hasSize(3);
     }
 
     private CreateTemplateRequest makeTemplateRequest(String title) {
