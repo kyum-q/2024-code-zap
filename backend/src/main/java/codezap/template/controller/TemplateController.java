@@ -5,6 +5,7 @@ import java.net.URI;
 import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,11 @@ public class TemplateController implements SpringDocTemplateController {
     @GetMapping("/{id}")
     public ResponseEntity<FindTemplateByIdResponse> getTemplateById(@PathVariable Long id) {
         return ResponseEntity.ok(templateService.findById(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<FindAllTemplatesResponse> getTemplatesContainTopic(@Param("topic") String topic) {
+        throw new NotImplementedException();
     }
 
     @PostMapping("/{id}")
