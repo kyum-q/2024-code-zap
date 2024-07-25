@@ -3,7 +3,8 @@ name: Frontend CD
 on:
   push:
     branches:
-      - main, develop, feat/fe_cd
+      - develop
+      - main
 
 jobs:
   build:
