@@ -71,4 +71,10 @@ jobs:
           new_run_pids=$(echo "$new_run_pids" | tr '\n' ' ')
           echo "old_run_pids : ${{ env.RUN_PIDS }}"
           echo "new_run_pids : $new_run_pids"
-          test {{ env.RUN_PIDS }} = new_run_pids && { echo "Deploy Failed"; exit 1; }
+
+          if [ "$current_run_pids" = "$new_run_pids" ]; then
+            echo "Deploy Failed"
+            exit 1
+          else
+            echo "Deploy Succeeded"
+          fi
