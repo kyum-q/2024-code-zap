@@ -52,10 +52,8 @@ jobs:
 
       - name: Check Run Processes
         run: |
-          old_run_pids=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
-          old_run_pids=$(echo "$old_run_pids" | tr '\n' ' ')
-          echo "RUN_PIDS=${old_run_pids}" >> $GITHUB_ENV
-          echo "old_run_pids : $old_run_pids"
+          cd ${{ secrets.SCRIPT_DIRECTORY }}
+          bash check-old-pids.sh
         
       - name: Run Deploy Script
         run: |
@@ -66,15 +64,5 @@ jobs:
                     
       - name: Verify Deploy Succeed
         run: |
-          sleep 2
-          new_run_pids=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
-          new_run_pids=$(echo "$new_run_pids" | tr '\n' ' ')
-          echo "old_run_pids : ${{ env.RUN_PIDS }}"
-          echo "new_run_pids : $new_run_pids"
-
-          if [ "$current_run_pids" = "$new_run_pids" ]; then
-            echo "Deploy Failed"
-            exit 1
-          else
-            echo "Deploy Succeeded"
-          fi
+          cd ${{ secrets.SCRIPT_DIRECTORY }}
+          bash verify-deploy.sh
