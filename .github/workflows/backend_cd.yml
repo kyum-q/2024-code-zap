@@ -54,13 +54,15 @@ jobs:
         run: |
           pgrep_result=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
           IFS=' ' read -r -a pid_array <<< "$pgrep_result"
-          run_pids="${pid_array[*]}"
-          echo "RUN_PIDS=${run_pids}" >> $GITHUB_ENV
+          old_run_pids="${pid_array[*]}"
+          echo "RUN_PIDS=${old_run_pids}" >> $GITHUB_ENV
+          echo "old_run_pids : ${{ env.RUN_PIDS }}"
         
       - name: Run Deploy Script
         run: |
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
+          cd ${{ secruts.SCRIPT_DIRECTORY }}
           RUNNER_TRACKING_ID="" && bash script/start.sh dev
                     
       - name: Verify Deploy Succeed
@@ -69,4 +71,6 @@ jobs:
           pgrep_result=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
           IFS=' ' read -r -a pid_array <<< "$pgrep_result"
           new_run_pids="${pid_array[*]}"
+          echo "old_run_pids : ${{ env.RUN_PIDS }}"
+          echo "new_run_pids : $new_run_pids"
           test {{ env.RUN_PIDS }} = new_run_pids && { echo "Deploy Failed"; exit 1; }
