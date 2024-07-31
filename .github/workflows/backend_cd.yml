@@ -52,8 +52,10 @@ jobs:
 
           if [ "$BRANCH_NAME" = "main" ]; then
             echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+            echo "개발 환경 : prod"
           elif [ "$BRANCH_NAME" = "develop" ]; then
             echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+            echo "개발 환경 : dev"
           else
             exit 1
           fi
