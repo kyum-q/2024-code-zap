@@ -52,11 +52,10 @@ jobs:
 
       - name: Check Run Processes
         run: |
-          pgrep_result=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
-          IFS=' ' read -r -a pid_array <<< "$pgrep_result"
-          old_run_pids="${pid_array[*]}"
+          old_run_pids=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
+          old_run_pids=$(echo "$old_run_pids" | tr '\n' ' ')
           echo "RUN_PIDS=${old_run_pids}" >> $GITHUB_ENV
-          echo "old_run_pids : ${{ env.RUN_PIDS }}"
+          echo "old_run_pids : $old_run_pids"
         
       - name: Run Deploy Script
         run: |
@@ -68,9 +67,8 @@ jobs:
       - name: Verify Deploy Succeed
         run: |
           sleep 2
-          pgrep_result=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
-          IFS=' ' read -r -a pid_array <<< "$pgrep_result"
-          new_run_pids="${pid_array[*]}"
+          new_run_pids=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
+          new_run_pids=$(echo "$new_run_pids" | tr '\n' ' ')
           echo "old_run_pids : ${{ env.RUN_PIDS }}"
           echo "new_run_pids : $new_run_pids"
           test {{ env.RUN_PIDS }} = new_run_pids && { echo "Deploy Failed"; exit 1; }
