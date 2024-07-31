@@ -62,7 +62,7 @@ jobs:
         run: |
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
-          cd ${{ secruts.SCRIPT_DIRECTORY }}
+          cd ${{ secrets.SCRIPT_DIRECTORY }}
           RUNNER_TRACKING_ID="" && bash script/start.sh dev
                     
       - name: Verify Deploy Succeed
