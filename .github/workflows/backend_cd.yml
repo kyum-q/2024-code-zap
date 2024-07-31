@@ -9,24 +9,32 @@ on:
 jobs:
   find-branch:
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
     steps:
       - name: Get current branch name
         id: get-branch
         run: |
-          # Extract branch name from GITHUB_REF
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
+      - name: Set environment variable based on branch
+        id: set-env
+        run: |
           if [ "$BRANCH_NAME" = "main" ]; then
-            echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+            echo "::set-output name=environment::prod"
           elif [ "$BRANCH_NAME" = "develop" ]; then
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+            echo "::set-output name=environment::dev"
           else
-            exit 1
+            echo "::set-output name=environment::staging"
           fi
+
   build:
+    needs: find-branch
     runs-on: ubuntu-latest
     env:
       build-directory: ./backend
+      ENVIRONMENT: ${{ needs.find-branch.outputs.environment }}  # Pass ENVIRONMENT to the build Job
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,6 +68,8 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    env:
+      ENVIRONMENT: ${{ needs.find-branch.outputs.environment }}  # Pass ENVIRONMENT to the deploy Job
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v4
@@ -77,7 +87,7 @@ jobs:
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
           cd ${{ secrets.SCRIPT_DIRECTORY }}
-          RUNNER_TRACKING_ID="" && bash start.sh ${{ secrets.ENVIRONMENT }}
+          RUNNER_TRACKING_ID="" && bash start.sh ${{ env.ENVIRONMENT }}
                     
       - name: Verify Deploy Succeed
         run: |
