@@ -2,15 +2,13 @@ name: 백엔드 CD
 
 on:
   push:
-    branches: 
+    branches:
       - develop
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      build-directory: ./backend
     steps:
       - name: 체크아웃
         uses: actions/checkout@v4
@@ -33,7 +31,7 @@ jobs:
             
       - name: bootJar로 jar 파일 생성
         run: ./gradlew bootJar
-        working-directory: ${{ env.build-directory }}
+        working-directory: ./backend
 
       - name: jar 파일 Artifact로 업로드
         uses: actions/upload-artifact@v4
@@ -77,7 +75,7 @@ jobs:
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
           cd ${{ secrets.SCRIPT_DIRECTORY }}
-          RUNNER_TRACKING_ID="" && bash start.sh ${{ secrets.ENVIRONMENT }}
+          RUNNER_TRACKING_ID="" && bash start.sh ${{ env.ENVIRONMENT }}
                     
       - name: 실행 프로세스 확인으로 배포 검증 
         run: |
