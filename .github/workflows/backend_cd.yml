@@ -54,7 +54,7 @@ jobs:
 
       - name: Check Run Processes
         run: |
-         run_pids = pgrep -f 'java -jar .*dev.*code-zap.*\.jar'
+         run_pids=$(pgrep -f 'java -jar .*dev.*code-zap.*\.jar')
          echo "RUN_PIDS = ${run_pids}" >> $GITHUB_ENV
         
       - name: Run Deploy Script
