@@ -2,7 +2,7 @@ name: 백엔드 CD
 
 on:
   push:
-    branches:
+    branches: 
       - develop
 
 jobs:
