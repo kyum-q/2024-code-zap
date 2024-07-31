@@ -2,7 +2,10 @@ package codezap.template.controller;
 
 import java.net.URI;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import codezap.template.dto.request.CreateTemplateRequest;
+import codezap.template.dto.request.UpdateTemplateRequest;
 import codezap.template.dto.response.FindAllTemplatesResponse;
 import codezap.template.dto.response.FindTemplateByIdResponse;
 import codezap.template.service.TemplateService;
@@ -21,14 +25,17 @@ public class TemplateController implements SpringDocTemplateController {
 
     private final TemplateService templateService;
 
-    public TemplateController(TemplateService templateService) {this.templateService = templateService;}
-
-    @PostMapping("")
-    public ResponseEntity<Void> create(@RequestBody CreateTemplateRequest createTemplateRequest) {
-        return ResponseEntity.created(URI.create("/templates" + templateService.create(createTemplateRequest))).build();
+    public TemplateController(TemplateService templateService) {
+        this.templateService = templateService;
     }
 
-    @GetMapping("")
+    @PostMapping
+    public ResponseEntity<Void> create(@Valid @RequestBody CreateTemplateRequest createTemplateRequest) {
+        return ResponseEntity.created(URI.create("/templates/" + templateService.create(createTemplateRequest)))
+                .build();
+    }
+
+    @GetMapping
     public ResponseEntity<FindAllTemplatesResponse> getTemplates() {
         return ResponseEntity.ok(templateService.findAll());
     }
@@ -36,5 +43,20 @@ public class TemplateController implements SpringDocTemplateController {
     @GetMapping("/{id}")
     public ResponseEntity<FindTemplateByIdResponse> getTemplateById(@PathVariable Long id) {
         return ResponseEntity.ok(templateService.findById(id));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> updateTemplate(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTemplateRequest updateTemplateRequest
+    ) {
+        templateService.update(id, updateTemplateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTemplate(@PathVariable Long id) {
+        templateService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
