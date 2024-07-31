@@ -77,7 +77,7 @@ jobs:
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
           cd ${{ secrets.SCRIPT_DIRECTORY }}
-          RUNNER_TRACKING_ID="" && bash start.sh dev
+          RUNNER_TRACKING_ID="" && bash start.sh ${{ secrets.ENVIRONMENT }}
                     
       - name: 실행 프로세스 확인으로 배포 검증 
         run: |
