@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - main
 
 jobs:
   build:
@@ -44,20 +43,28 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    env:
+      PROCESSES: 0
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: code-zap-jar
           path: ${{ secrets.WORK_DIRECTORY }}
-          
+
+      - name: Check Run Processes
+        run: |
+         run_pids = pgrep -f 'java -jar .*dev.*code-zap.*\.jar'
+         echo "RUN_PIDS = ${run_pids}" >> $GITHUB_ENV
+        
       - name: Run Deploy Script
         run: |
           cd ${{ secrets.WORK_DIRECTORY }}
           unzip -o code-zap-jar.zip
-          RUNNER_TRACKING_ID="" && ./deploy.sh
-          
+          RUNNER_TRACKING_ID="" && bash script/start.sh dev
+                    
       - name: Verify Deploy Succeed
         run: |
-          sleep 3
-          pgrep -f 'java -jar .*code-zap.*\.jar' || { echo "Deploy Failed"; exit 1; }
+          sleep 2
+          new_run_pids = pgrep -f 'java -jar .*dev.*code-zap.*\.jar' 
+          test {{ env.RUN_PIDS }} = new_run_pids && { echo "Deploy Failed"; exit 1; }
