@@ -1,4 +1,4 @@
-name: Backend CD
+name: 백엔드 CD
 
 on:
   push:
@@ -9,19 +9,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      build-directory: ./backend
     steps:
-      - name: Checkout
+      - name: 체크아웃
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: JDK 17 설정
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
 
-      - name: Gradle Caching
+      - name: gradle 캐싱
         uses: actions/cache@v3
         with:
           path: |
@@ -31,33 +29,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
             
-      - name: Build BootJar
-        run: ./gradlew bootJar
-        working-directory: ${{ env.build-directory }}
 
-      - name: Upload Artifact
+      - name: bootJar로 jar 파일 생성
+        run: ./gradlew bootJar
+        working-directory: ./backend
+
+      - name: jar 파일 Artifact로 업로드
         uses: actions/upload-artifact@v4
         with:
           name: code-zap-jar
           path: backend/build/libs/*.jar
-
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: code-zap-jar
-          path: ${{ secrets.WORK_DIRECTORY }}
-          
-      - name: Run Deploy Script
-        run: |
-          cd ${{ secrets.WORK_DIRECTORY }}
-          unzip -o code-zap-jar.zip
-          RUNNER_TRACKING_ID="" && ./deploy.sh
-          
-      - name: Verify Deploy Succeed
-        run: |
-          sleep 3
-          pgrep -f 'java -jar .*code-zap.*\.jar' || { echo "Deploy Failed"; exit 1; }
