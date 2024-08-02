@@ -52,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: code-zap-jar
-          path: ${{ secrets.WORK_DIRECTORY }}/${{ env.ENVIRONMENT }}
+          path: ${{ secrets.WORK_DIRECTORY }}
 
       - name: 실행 프로세스 확인
         run: |
