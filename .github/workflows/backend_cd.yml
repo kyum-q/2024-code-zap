@@ -46,7 +46,7 @@ jobs:
       - name: 브랜치명을 통해 개발 환경 알아내기
         run: |
           cd ${{ secrets.SCRIPT_DIRECTORY }}
-          bash find-env-branch.sh
+          bash find-env-by-branch.sh
           
       - name: Artifact 다운로드
         uses: actions/download-artifact@v4
