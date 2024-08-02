@@ -52,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: code-zap-jar
-          path: ${{ secrets.WORK_DIRECTORY }}
+          path: ${{ secrets.WORK_DIRECTORY }}/${{ env.ENVIRONMENT }}
 
       - name: 실행 프로세스 확인
         run: |
@@ -62,7 +62,7 @@ jobs:
       - name: 배포 스크립트 실행
         run: |
           cd ${{ secrets.WORK_DIRECTORY }}
-          unzip -o code-zap-jar.zip -d ${{ env.ENVIRONMENT }}
+          unzip -o code-zap-jar.zip
           cd ${{ secrets.SCRIPT_DIRECTORY }}
           RUNNER_TRACKING_ID="" && bash start.sh ${{ env.ENVIRONMENT }}
                     
