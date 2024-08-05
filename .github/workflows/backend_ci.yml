@@ -31,7 +31,9 @@ jobs:
           distribution: temurin
           
       - name: 테스트 코드 실행
-        run: ./gradlew test
+        run: |
+         pwd
+         ./gradlew test
         working-directory: ./backend
 
       - name: 클린업
