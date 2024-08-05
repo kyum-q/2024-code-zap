@@ -14,23 +14,30 @@ jobs:
     steps:
       - name: 체크아웃
         uses: actions/checkout@v4
+        with:
+          path: /home/runner/ci/repo
 
       - name: H2 스프링 설정 생성
         run: |
+          mkdir -p /home/runner/ci/repo/backend/src/main/resources
           echo "spring:
             h2:
               console:
                 enabled: true
                 path: /h2-console
             datasource:
-              url: jdbc:h2:mem:database" > backend/src/main/resources/application.yml
+              url: jdbc:h2:mem:database" > /home/runner/ci/repo/backend/src/main/resources/application.yml
 
       - name: JDK 17 설정
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
-          
+
       - name: 테스트 코드 실행
         run: ./gradlew test
-        working-directory: ./backend
+        working-directory: /home/runner/ci/repo/backend
+
+      - name: 클린업
+        if: always()  # 워크플로우가 성공하거나 실패하더라도 항상 실행됩니다.
+        run: rm -rf /home/runner/ci
