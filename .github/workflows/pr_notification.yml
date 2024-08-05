@@ -9,8 +9,8 @@ jobs:
     - name: Set environment variables
       run: |
         pwd
-        export SLACK_WEBHOOK_URL=$(cat ../slack_nofi/SLACK_PR_REVIEW_WEBHOOK_URL)
-        export SLACK_IDS=$(cat ../slack_nofi/SLACK_IDS)
+        export SLACK_WEBHOOK_URL=$(cat ../slack_noti/SLACK_PR_REVIEW_WEBHOOK_URL)
+        export SLACK_IDS=$(cat ../slack_noti/SLACK_IDS)
         echo "SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL" >> $GITHUB_ENV
         echo "SLACK_IDS=$SLACK_IDS" >> $GITHUB_ENV
     - name: PR에 리뷰 등록 시 담당자에게 Slack 알람
