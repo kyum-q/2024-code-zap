@@ -114,4 +114,8 @@ public class TemplateService {
         snippet.updateSnippet(updateSnippetRequest.filename(), updateSnippetRequest.content(),
                 updateSnippetRequest.ordinal());
     }
+  
+    public FindAllTemplatesResponse findContainTopic(String topic) {
+        return FindAllTemplatesResponse.from(thumbnailSnippetRepository.searchByTopic(topic));
+    }
 }
