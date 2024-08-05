@@ -31,11 +31,9 @@ jobs:
           distribution: temurin
           
       - name: 테스트 코드 실행
-        run: |
-         pwd
-         ./gradlew test
+        run: ./gradlew test
         working-directory: ./backend
 
       - name: 클린업
         if: always()
-        run: rm -rf ./backend
+        run: rm -rf ../2024-code-zap/
