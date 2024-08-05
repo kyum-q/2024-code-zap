@@ -28,8 +28,12 @@ jobs:
       - name: bootJar로 jar 파일 생성
         run: |
           ./gradlew bootJar
-          mv build/libs/your-app.jar ${{ secrets.WORK_DIRECTORY }}/${{ env.ENVIRONMENT }}
+          mv build/libs/*.jar ${{ secrets.WORK_DIRECTORY }}/${{ env.ENVIRONMENT }}
         working-directory: ./backend
+      
+      - name: 클린업
+        if: always()
+        run: rm -rf ../2024-code-zap/*
         
   deploy:
     needs: build
