@@ -51,8 +51,6 @@ jobs:
         
       - name: 배포 스크립트 실행
         run: |
-          cd ${{ secrets.WORK_DIRECTORY }}
-          unzip -o code-zap-jar.zip
           cd ${{ secrets.SCRIPT_DIRECTORY }}
           RUNNER_TRACKING_ID="" && bash start.sh ${{ env.ENVIRONMENT }}
                     
