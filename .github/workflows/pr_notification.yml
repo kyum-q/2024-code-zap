@@ -8,6 +8,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: 위치 확인
+      run: pwd
         
     - name: Slack 알람 보내기
       env:
