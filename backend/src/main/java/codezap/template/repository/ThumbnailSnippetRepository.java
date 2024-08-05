@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import codezap.template.domain.Template;
 import codezap.template.domain.ThumbnailSnippet;
 
 public interface ThumbnailSnippetRepository extends JpaRepository<ThumbnailSnippet, Long> {
+
+    ThumbnailSnippet findByTemplate(Template template);
+
     @Query("""
             SELECT t
             FROM ThumbnailSnippet t JOIN Snippet s ON t.template.id = s.template.id
@@ -17,5 +21,6 @@ public interface ThumbnailSnippetRepository extends JpaRepository<ThumbnailSnipp
             OR s.content LIKE %:topic%
             """)
     List<ThumbnailSnippet> searchByTopic(@Param("topic") String topic);
-
+  
+    void deleteByTemplateId(Long id);
 }
